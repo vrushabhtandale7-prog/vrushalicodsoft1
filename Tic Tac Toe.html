@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Users/DELL/Downloads/Tic%20Tac%20Toe.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f9;
+    }
+    .game {
+      text-align: center;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      margin: 20px auto;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #fff;
+      border: 2px solid #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      cursor: pointer;
+    }
+    .cell.taken {
+      pointer-events: none;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <h1>Tic Tac Toe</h1>
+    <div class="board" id="board"><div class="cell" data-index="0"></div><div class="cell" data-index="1"></div><div class="cell" data-index="2"></div><div class="cell" data-index="3"></div><div class="cell" data-index="4"></div><div class="cell" data-index="5"></div><div class="cell" data-index="6"></div><div class="cell" data-index="7"></div><div class="cell" data-index="8"></div></div>
+    <h2 id="status">It's a draw!</h2>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const statusText = document.getElementById("status");
+    let currentPlayer = "X";
+    let cells = ["", "", "", "", "", "", "", "", ""];
+
+    function createBoard() {
+      board.innerHTML = "";
+      cells.forEach((cell, index) => {
+        const div = document.createElement("div");
+        div.classList.add("cell");
+        div.dataset.index = index;
+        div.addEventListener("click", handleClick);
+        div.textContent = cell;
+        board.appendChild(div);
+      });
+    }
+
+    function handleClick(e) {
+      const index = e.target.dataset.index;
+      if (cells[index] === "") {
+        cells[index] = currentPlayer;
+        e.target.textContent = currentPlayer;
+        e.target.classList.add("taken");
+
+        if (checkWinner()) {
+          statusText.textContent = `🎉 Player ${currentPlayer} wins!`;
+          document.querySelectorAll(".cell").forEach(c => c.classList.add("taken"));
+          return;
+        }
+        if (!cells.includes("")) {
+          statusText.textContent = "It's a draw!";
+          return;
+        }
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+        statusText.textContent = `Player ${currentPlayer}'s turn`;
+      }
+    }
+
+    function checkWinner() {
+      const winPatterns = [
+        [0,1,2], [3,4,5], [6,7,8],  // rows
+        [0,3,6], [1,4,7], [2,5,8],  // cols
+        [0,4,8], [2,4,6]            // diagonals
+      ];
+      return winPatterns.some(pattern => {
+        const [a,b,c] = pattern;
+        return cells[a] && cells[a] === cells[b] && cells[a] === cells[c];
+      });
+    }
+
+    createBoard();
+  </script>
+
+</body></html>
